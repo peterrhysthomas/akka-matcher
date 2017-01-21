@@ -1,7 +1,10 @@
 package akkaexample;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+
 
 public class App
 {
@@ -11,9 +14,15 @@ public class App
 class Trade implements Serializable{
     private String reference;
     private String exchangeReference;
+    //someData is a payload to make the Trade class memory footprint more realistic
+    private List<String> someData = new ArrayList<String>();
     public Trade(String reference, String exchangeReference) {
         this.reference = reference;
         this.exchangeReference = exchangeReference;
+        for (int i=0;i<20;i++){
+            someData.add(randomAlphabetic(10));
+        }
+
     }
     public String getReference() {
         return reference;
@@ -25,8 +34,14 @@ class Trade implements Serializable{
 
 class CcpTrade implements Serializable{
     private String exchangeReference;
+    //someData is a payload to make the CcpTrade class memory footprint more realistic
+    private List<String> someData = new ArrayList<String>();
     public CcpTrade(String exchangeReference) {
         this.exchangeReference = exchangeReference;
+        for (int i=0;i<20;i++){
+            someData.add(randomAlphabetic(10));
+        }
+
     }
     public String getExchangeReference() {
         return exchangeReference;
