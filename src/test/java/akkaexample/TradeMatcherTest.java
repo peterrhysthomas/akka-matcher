@@ -9,6 +9,9 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import scala.concurrent.duration.Duration;
 
+import static akkaexample.TestDataBuilder.aCcpTrade;
+import static akkaexample.TestDataBuilder.aTrade;
+
 import static org.junit.Assert.assertEquals;
 
 public class TradeMatcherTest{
@@ -32,7 +35,7 @@ public class TradeMatcherTest{
             final TestActorRef<TradeMatcher> matcher =
                     TestActorRef.create(system, Props.create(TradeMatcher.class), "tradematcher1");
 
-            final Trade trade = new Trade("123", "EX999");
+            final Trade trade = aTrade();
             matcher.tell(new NewTradeMessage(trade), getTestActor());
             matcher.tell(new GetTradesMessage(), getTestActor());
 
@@ -52,7 +55,7 @@ public class TradeMatcherTest{
             final TestActorRef<TradeMatcher> matcher =
                     TestActorRef.create(system, Props.create(TradeMatcher.class), "tradematcher2");
 
-            final CcpTrade ccpTrade = new CcpTrade("EX999");
+            final CcpTrade ccpTrade = aCcpTrade();
             matcher.tell(new NewCcpTradeMessage(ccpTrade), getTestActor());
             matcher.tell(new GetCcpTradesMessage(), getTestActor());
 
@@ -72,8 +75,8 @@ public class TradeMatcherTest{
             final TestActorRef<TradeMatcher> matcher =
                     TestActorRef.create(system, Props.create(TradeMatcher.class), "tradematcher3");
 
-            final Trade trade1 = new Trade("123", "EX999");
-            final Trade trade2 = new Trade("456", "EX888");
+            final Trade trade1 = aTrade();
+            final Trade trade2 = aTrade();
             matcher.tell(new NewTradeMessage(trade1), getTestActor());
             matcher.tell(new NewTradeMessage(trade2), getTestActor());
             matcher.tell(new CancelTradeMessage(trade1), getTestActor());
@@ -96,9 +99,9 @@ public class TradeMatcherTest{
             {
                 final TestActorRef<TradeMatcher> matcher =
                         TestActorRef.create(system, Props.create(TradeMatcher.class), "tradematcher4");
-                final Trade trade = new Trade("123", "EX999");
+                final Trade trade = aTrade();
                 matcher.tell(new NewTradeMessage(trade), getTestActor());
-                final CcpTrade ccpTrade = new CcpTrade("EX999");
+                final CcpTrade ccpTrade = aCcpTrade(trade.getExchangeReference());
                 matcher.tell(new NewCcpTradeMessage(ccpTrade), getTestActor());
 
                 matcher.tell(new GetUnmatchedMessage(), getTestActor());
@@ -121,7 +124,7 @@ public class TradeMatcherTest{
             {
                 final TestActorRef<TradeMatcher> matcher =
                         TestActorRef.create(system, Props.create(TradeMatcher.class), "tradematcher5");
-                final CcpTrade ccpTrade = new CcpTrade("EX999");
+                final CcpTrade ccpTrade = aCcpTrade();
                 matcher.tell(new NewCcpTradeMessage(ccpTrade), getTestActor());
                 matcher.tell(new GetUnmatchedMessage(), getTestActor());
 
@@ -142,7 +145,7 @@ public class TradeMatcherTest{
             {
                 final TestActorRef<TradeMatcher> matcher =
                         TestActorRef.create(system, Props.create(TradeMatcher.class), "tradematcher6");
-                final Trade trade = new Trade("123", "EX999");
+                final Trade trade = aTrade();
                 matcher.tell(new NewTradeMessage(trade), getTestActor());
                 matcher.tell(new GetUnmatchedMessage(), getTestActor());
 
@@ -163,9 +166,9 @@ public class TradeMatcherTest{
             {
                 final TestActorRef<TradeMatcher> matcher =
                         TestActorRef.create(system, Props.create(TradeMatcher.class), "tradematcher7");
-                final Trade trade = new Trade("123", "EX999");
+                final Trade trade = aTrade();
                 matcher.tell(new NewTradeMessage(trade), getTestActor());
-                final CcpTrade ccpTrade = new CcpTrade("EX999");
+                final CcpTrade ccpTrade = aCcpTrade(trade.getExchangeReference());
                 matcher.tell(new NewCcpTradeMessage(ccpTrade), getTestActor());
                 matcher.tell(new CancelTradeMessage(trade), getTestActor());
 
