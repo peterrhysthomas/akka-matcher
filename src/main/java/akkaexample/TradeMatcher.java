@@ -1,6 +1,8 @@
 package akkaexample;
 
 import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.Map;
 public class TradeMatcher extends UntypedActor {
     private Map<String, Trade> trades = new HashMap<String, Trade>();
     private Map<String, CcpTrade> ccpTrades = new HashMap<String, CcpTrade>();
+    LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
     public void onReceive(Object message) throws Throwable {
         if (message instanceof NewTradeMessage){
@@ -36,6 +39,7 @@ public class TradeMatcher extends UntypedActor {
     private UnmatchedItems performMatch() {
         List<Trade> unmatchedTrades = new ArrayList<Trade>();
         List<CcpTrade> unmatchedCcpTrades = new ArrayList<CcpTrade>();
+        log.debug("Starting matching for {} trades and {} ccp trades", trades.size(), ccpTrades.size());
 
         for (Trade trade : trades.values()){
             if (!ccpTrades.containsKey(trade.getExchangeReference())){
@@ -48,7 +52,10 @@ public class TradeMatcher extends UntypedActor {
                 unmatchedCcpTrades.add(ccpTrade);
             }
         }
+        log.debug("We have {} matches and {} unmatched", trades.size() - unmatchedTrades.size(),
+                unmatchedTrades.size() + unmatchedCcpTrades.size() );
 
+        log.debug("Memory {}", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
         return new UnmatchedItems(unmatchedTrades, unmatchedCcpTrades);
     }
 }
